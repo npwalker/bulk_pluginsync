@@ -1,0 +1,13 @@
+<%- |
+  String  $compile_master_pool_address,
+| -%>
+
+#! /bin/bash
+set -u
+set -e
+
+mkdir -p /opt/puppetlabs/puppet/cache
+cd /tmp
+curl -k -O "https://<%= $compile_master_pool_address %>:8140/packages/bulk_pluginsync.tar.gz"
+cd /opt/puppetlabs/puppet/cache
+tar -xf /tmp/bulk_pluginsync.tar.gz
