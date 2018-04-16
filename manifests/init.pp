@@ -10,21 +10,23 @@ class bulk_pluginsync(
   $compile_master_pool_address = $facts['fqdn'],
 ){
 
-  $command = 'cd /opt/puppetlabs/puppet/cache/; tar -czvf /opt/puppetlabs/server/data/packages/public/bulk_pluginsync.tar.gz lib'
+  $jetty_packages_directory = '/opt/puppetlabs/server/data/packages/public'
+  $tarball_location = "${jetty_packages_directory}/bulk_pluginsync.tar.gz"
+  $command = "cd /opt/puppetlabs/puppet/cache/; tar -czvf ${tarball_location} lib"
+
 
   cron { 'create tar.gz of pluginsync cache':
     command => $command,
     hour    => '*',
-    notify  => Exec['create tar.gz of pluginsync cache - onetime']
   }
 
   exec { 'create tar.gz of pluginsync cache - onetime':
-    path        => $facts['path'],
-    command     => $command,
-    refreshonly => true,
+    path    => $facts['path'],
+    command => $command,
+    creates => $tarball_location,
   }
 
-  file { '/opt/puppetlabs/server/data/packages/public/current/bulk_pluginsync.bash':
+  file { "${jetty_packages_directory}/current/bulk_pluginsync.bash":
     mode    => '0644',
     content => epp('bulk_pluginsync/bulk_pluginsync.bash.epp',
                     { 'compile_master_pool_address' => $compile_master_pool_address }
