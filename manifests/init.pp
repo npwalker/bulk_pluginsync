@@ -12,7 +12,7 @@ class bulk_pluginsync(
 
   $jetty_packages_directory = '/opt/puppetlabs/server/data/packages/public'
   $tarball_location = "${jetty_packages_directory}/bulk_pluginsync.tar.gz"
-  $command = "cd /opt/puppetlabs/puppet/cache/; tar -czvf ${tarball_location} lib"
+  $command = "cd /opt/puppetlabs/puppet/cache/; tar --selinux -czvf ${tarball_location} lib"
 
 
   cron { 'create tar.gz of pluginsync cache':
